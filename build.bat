@@ -5,6 +5,7 @@ SETLOCAL
 IF NOT DEFINED CMD_BAT ( SET CMD_BAT="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat" )
 IF NOT DEFINED DEBUG ( SET DEBUG=1 )
 IF NOT DEFINED EXE_NAME ( SET EXE_NAME=controller-app )
+IF NOT DEFINED RUN_AFTER_BUILD ( SET RUN_AFTER_BUILD=1 )
 
 REM Set the visual studio console/vars
 SET __VSCMD_ARG_no_logo=1
@@ -142,4 +143,4 @@ SET LFLAGS_D=%LFLAGS:    = %
 SET LIBS=%LIBS:    = %
 
 DEL *.pdb
-cl.exe %FILES% %CFLAGS% %INCLUDES% %DEFINES% %LFLAGS% %LIBS% && build\%EXE_NAME%
+cl.exe %FILES% %CFLAGS% %INCLUDES% %DEFINES% %LFLAGS% %LIBS% && IF %RUN_AFTER_BUILD%==1 ( build\%EXE_NAME% )

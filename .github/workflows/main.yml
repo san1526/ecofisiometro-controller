@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Create build directory
+      shell: cmd
+      run: |
+        mkdir build
+
+    - name: Debug build
+      env:
+        DEBUG: 1
+        CMD_BAT: '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"'
+        RUN_AFTER_BUILD: 0
+      shell: cmd
+      run: |
+        call build.bat
+
+    - name: Upload Debug Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: controller-debug.exe
+        path: .\build\controller-app.exe
+        retention-days: 30
+
+    - name: Release build
+      env:
+        DEBUG: 0
+        CMD_BAT: '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat"'
+        RUN_AFTER_BUILD: 0
+      shell: cmd
+      run: .\build.bat
+
+    - name: Upload Release Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: controller-release.exe
+        path: .\build\controller-app.exe
+        retention-days: 30
